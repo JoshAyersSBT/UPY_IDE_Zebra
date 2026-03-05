@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>MicroPython Studio</title>
+
+  <!-- App styles -->
+  <link rel="stylesheet" href="./style.css" />
+
+  <!-- xterm styles -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xterm@5.5.0/css/xterm.css" />
+</head>
+
+<body>
+  <div id="app">
+
+    <!-- =======================
+         Top Bar
+         ======================= -->
+    <header id="topbar">
+      <div class="group">
+        <button id="btnScan">Scan</button>
+
+        <label for="deviceSelect">Device</label>
+        <select id="deviceSelect">
+          <option value="">(none)</option>
+        </select>
+
+        <button id="btnConnect">Connect</button>
+        <button id="btnDisconnect">Disconnect</button>
+      </div>
+
+      <div class="group">
+        <label for="pathRemote">Remote</label>
+        <input id="pathRemote" type="text" value="main.py" />
+        <button id="btnPush">Push</button>
+        <button id="btnRun">Run</button>
+      </div>
+
+      <div class="group">
+        <button id="btnSaveFile">Save</button>
+        <span class="muted">Active:</span>
+        <span id="activeFileLabel">(no file)</span>
+      </div>
+
+      <div id="status">Loading…</div>
+    </header>
+
+    <!-- =======================
+         Workspace
+         ======================= -->
+    <div id="workRoot">
+
+      <!-- ===== Project Pane (left) ===== -->
+      <aside id="projectPane">
+        <div id="projectHeader">
+          <div class="title">Project</div>
+
+          <div class="row">
+            <input id="projectRoot" type="text" placeholder="C:\\path\\to\\project" />
+            <button id="btnSetRoot">Set Root</button>
+          </div>
+
+          <div class="row">
+            <select id="projectTemplate">
+              <option value="mp_basic" selected>MicroPython Basic</option>
+              <option value="mp_driver">Driver Skeleton</option>
+              <option value="mp_pkg">Package Layout</option>
+            </select>
+            <button id="btnNewProject">New Project</button>
+          </div>
+
+          <div class="row">
+            <button id="btnRefreshTree">Refresh</button>
+            <button id="btnNewFile">New File</button>
+            <button id="btnNewFolder">New Folder</button>
+            <button id="btnDeleteNode" class="danger">Delete</button>
+          </div>
+
+          <div class="row">
+            <input id="treeFilter" type="text" placeholder="Filter files…" />
+          </div>
+
+          <!-- =======================
+               Flasher UI (moved into WebView)
+               ======================= -->
+          <details id="flasherDetails" class="panel" open>
+            <summary class="panelSummary">Flasher</summary>
+
+            <div class="row">
+              <input id="flashFwPath" type="text" placeholder="Firmware .bin path" />
+              <button id="btnBrowseFw" title="Browse for firmware">Browse</button>
+            </div>
+
+            <div class="row">
+              <label class="miniLabel" for="flashBaud">Baud</label>
+              <select id="flashBaud">
+                <option>115200</option>
+                <option>230400</option>
+                <option selected>460800</option>
+                <option>921600</option>
+                <option>1500000</option>
+              </select>
+
+              <label class="miniLabel" for="flashAddr">Addr</label>
+              <input id="flashAddr" type="text" value="0x1000" style="max-width: 110px;" />
+            </div>
+
+            <div class="row">
+              <label class="chk"><input id="flashEraseFirst" type="checkbox" checked /> Erase first</label>
+            </div>
+
+            <div class="row">
+              <button id="btnFlashFirmware">Flash</button>
+              <button id="btnEraseFlash" class="danger">Erase</button>
+            </div>
+
+            <div class="row" style="gap:10px; align-items:center;">
+              <div id="flashStatus" class="muted" style="min-width: 120px;">Idle</div>
+              <div id="flashProgressOuter" aria-label="Flash progress">
+                <div id="flashProgressInner"></div>
+              </div>
+              <div id="flashProgressPct" class="muted" style="min-width: 42px; text-align:right;">0%</div>
+            </div>
+
+            <div class="muted" style="margin-top:6px; line-height:1.35;">
+              Tip: If flashing fails, hold <b>BOOT</b> and tap <b>RESET</b> to enter DOWNLOAD mode.
+            </div>
+          </details>
+        </div>
+
+        <div id="treeWrap">
+          <div id="tree"></div>
+        </div>
+
+        <div id="projectFooter">
+          <div class="muted">Selected:</div>
+          <div id="selectedNodeLabel" class="muted">(none selected)</div>
+        </div>
+      </aside>
+
+      <!-- ===== Main Pane (right) ===== -->
+      <section id="mainPane">
+
+        <!-- Editor Pane -->
+        <div id="editorPane">
+          <div id="editor"></div>
+        </div>
+
+        <!-- Manual splitter gutter -->
+        <div id="splitGutter" title="Drag to resize terminal"></div>
+
+        <!-- Terminal Pane -->
+        <div id="terminalPane">
+          <div id="terminalTabs">
+            <button id="tabRepl" class="tab active">REPL</button>
+            <button id="tabLogs" class="tab">Logs</button>
+            <div id="terminalTabSpacer"></div>
+            <button id="btnClearLogs" class="tabAction">Clear</button>
+          </div>
+
+          <div id="terminalViews">
+            <div id="replView" class="termView active">
+              <div id="replTerminal"></div>
+            </div>
+
+            <div id="logsView" class="termView">
+              <div id="logTerminal"></div>
+            </div>
+          </div>
+        </div>
+
+      </section>
+    </div>
+  </div>
+
+  <!-- Qt WebChannel MUST be loaded before editor.js -->
+  <script src="qrc:///qtwebchannel/qwebchannel.js"></script>
+
+  <!-- Monaco AMD loader (only one loader.js/require.js) -->
+  <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.52.0/min/vs/loader.js"></script>
+
+  <!-- xterm + fit addon -->
+  <script src="https://cdn.jsdelivr.net/npm/xterm@5.5.0/lib/xterm.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xterm-addon-fit@0.8.0/lib/xterm-addon-fit.js"></script>
+
+  <!-- App logic -->
+  <script src="./editor.js"></script>
+</body>
+</html>

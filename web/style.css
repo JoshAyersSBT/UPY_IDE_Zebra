@@ -1,0 +1,370 @@
+html, body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  background: #0f111a;
+  color: #e6e6e6;
+}
+
+/* App frame */
+#app {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+/* Top bar */
+#topbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-bottom: 1px solid #23263a;
+  background: #111428;
+  flex: 0 0 auto;
+}
+
+#topbar .group {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  padding-right: 10px;
+  margin-right: 6px;
+  border-right: 1px solid #23263a;
+}
+
+#topbar label {
+  font-size: 12px;
+  opacity: 0.9;
+}
+
+#topbar input, #topbar select {
+  background: #0f132a;
+  color: #e6e6e6;
+  border: 1px solid #23263a;
+  border-radius: 6px;
+  padding: 6px 8px;
+  font-size: 12px;
+  outline: none;
+}
+
+#topbar button {
+  background: #1a2146;
+  color: #e6e6e6;
+  border: 1px solid #2a3160;
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+#topbar button:hover { filter: brightness(1.08); }
+#topbar button:active { transform: translateY(1px); }
+
+#activeFileLabel {
+  font-size: 12px;
+  opacity: 0.9;
+  max-width: 320px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#status {
+  margin-left: auto;
+  font-size: 12px;
+  opacity: 0.95;
+  padding: 4px 10px;
+  border: 1px solid #23263a;
+  border-radius: 999px;
+  background: #0f132a;
+  max-width: 45%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Workspace */
+#workRoot {
+  flex: 1 1 auto;
+  min-height: 0;
+  height: 0;
+  display: grid;
+  grid-template-columns: 320px 1fr;
+}
+
+/* Project pane */
+#projectPane {
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid #23263a;
+  background: #0b0e17;
+}
+
+#projectHeader {
+  padding: 10px;
+  border-bottom: 1px solid #23263a;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+#projectHeader .row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+#projectHeader .title {
+  font-weight: 600;
+  font-size: 13px;
+  opacity: 0.95;
+}
+
+#projectHeader input, #projectHeader select {
+  flex: 1 1 auto;
+  background: #0f132a;
+  color: #e6e6e6;
+  border: 1px solid #23263a;
+  border-radius: 8px;
+  padding: 7px 9px;
+  font-size: 12px;
+  outline: none;
+}
+
+#projectHeader button {
+  background: #1a2146;
+  color: #e6e6e6;
+  border: 1px solid #2a3160;
+  border-radius: 8px;
+  padding: 7px 10px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+#projectHeader button:hover { filter: brightness(1.08); }
+#projectHeader button:active { transform: translateY(1px); }
+
+#projectHeader .danger {
+  background: #3a1620;
+  border-color: #6a2a3c;
+}
+
+.iconBtn {
+  padding: 6px 9px !important;
+  border-radius: 999px !important;
+}
+
+#treeWrap {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  padding: 8px 6px 12px 6px;
+}
+
+#projectFooter {
+  flex: 0 0 auto;
+  border-top: 1px solid #23263a;
+  padding: 8px 10px;
+}
+
+.muted {
+  opacity: 0.8;
+  font-size: 12px;
+}
+
+/* Tree */
+#tree {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12px;
+  line-height: 1.25;
+}
+
+.treeNode {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 6px;
+  border-radius: 8px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.treeNode:hover { background: rgba(255,255,255,0.04); }
+.treeNode.selected { background: rgba(90,120,255,0.18); }
+
+.treeIndent { width: 14px; flex: 0 0 14px; }
+.treeTwisty { width: 14px; flex: 0 0 14px; opacity: 0.8; }
+.treeIcon { width: 16px; flex: 0 0 16px; opacity: 0.9; }
+.treeName { flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.treeBadge {
+  font-size: 10px;
+  opacity: 0.7;
+  border: 1px solid #23263a;
+  padding: 2px 6px;
+  border-radius: 999px;
+}
+
+/* Main pane */
+#mainPane {
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+#editorPane {
+  flex: 1 1 auto;
+  min-height: 160px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+#editor {
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+}
+
+/* Manual gutter */
+#splitGutter {
+  flex: 0 0 8px;
+  height: 8px;
+  cursor: row-resize;
+  background: linear-gradient(#23263a, #2b2f4b);
+  border-top: 1px solid #1c1f33;
+  border-bottom: 1px solid #1c1f33;
+}
+
+/* Terminal pane */
+#terminalPane {
+  flex: 0 0 260px;
+  min-height: 140px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: #0b0e17;
+  border-top: 1px solid #23263a;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Tabs */
+#terminalTabs {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 8px 6px 8px;
+  background: #0b0e17;
+  border-bottom: 1px solid #23263a;
+}
+
+#terminalTabSpacer { flex: 1 1 auto; }
+
+#terminalTabs .tab {
+  background: #10132a;
+  color: #e6e6e6;
+  border: 1px solid #23263a;
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-size: 12px;
+  cursor: pointer;
+  opacity: 0.9;
+}
+
+#terminalTabs .tab.active {
+  background: #1a2146;
+  border-color: #2a3160;
+  opacity: 1;
+}
+
+#terminalTabs .tabAction {
+  background: #10132a;
+  color: #e6e6e6;
+  border: 1px solid #23263a;
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+/* Views */
+#terminalViews {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.termView {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: none;
+  padding: 6px 6px 10px 6px;
+  box-sizing: border-box;
+}
+
+.termView.active {
+  display: flex;
+  flex-direction: column;
+}
+
+#replTerminal, #logTerminal {
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+}
+
+.hidden { display: none !important; }
+
+.progressWrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-top: 8px;
+}
+
+.progressBar {
+  flex: 1;
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.08);
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  width: 0%;
+  transition: width 120ms linear;
+  background: rgba(120,180,255,0.85); /* keep consistent with your accent */
+}
+
+.progressText {
+  min-width: 42px;
+  text-align: right;
+  opacity: 0.9;
+  font-variant-numeric: tabular-nums;
+}
+
+.spinner {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.25);
+  border-top-color: rgba(255,255,255,0.85);
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.statusLine {
+  opacity: 0.9;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
