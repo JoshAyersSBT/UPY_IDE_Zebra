@@ -1,2 +1,5 @@
 pyserial
 esptool
+pyrightp
+pyqt6
+pyqt6-webeninge 
